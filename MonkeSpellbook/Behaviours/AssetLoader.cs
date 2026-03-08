@@ -12,7 +12,7 @@ public static class AssetLoader
         using var stream = assembly.GetManifestResourceStream(resourcePath);
         if (stream == null)
         {
-            Debug.LogError($"Embedded resource not found: {resourcePath}");
+            Plugin.Log.LogError($"Embedded resource not found: {resourcePath}");
             return null;
         }
 

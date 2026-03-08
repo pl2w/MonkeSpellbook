@@ -10,7 +10,14 @@
         </RestoreAdditionalProjectSources>
     </PropertyGroup>
 
-    <ItemGroup>
+    <ItemGroup Condition="'$(CI)'=='TRUE'">
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
+        <PackageReference Publicize="true" Include="gorillatag" Version="1.0.*"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(CI)'!='TRUE'">
+        <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.1" PrivateAssets="all" />
+        
         <Reference Include="0Harmony">
             <HintPath>$(GorillaTagDir)/BepInEx/core/0Harmony.dll</HintPath>
             <Private>false</Private>
@@ -73,7 +80,7 @@
             <HintPath>$(GorillaTagDir)/BepInEx/core/MonoMod.Utils.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="Assembly-CSharp">
+        <Reference Include="Assembly-CSharp" Publicize="true">
             <HintPath>$(GorillaTagDir)/Gorilla Tag_Data/Managed/Assembly-CSharp.dll</HintPath>
             <Private>false</Private>
         </Reference>
@@ -134,7 +141,7 @@
 
     <Import Project="Directory.Build.local.props" Condition="Exists('Directory.Build.local.props')"/>
 
-    <Target Name="PostBuild_CopyToBepInEx" AfterTargets="Build" Condition="Exists('$(GorillaTagDir)')">
+    <Target Name="PostBuild_CopyToBepInEx" AfterTargets="Build" Condition="Exists('$(GorillaTagDir)') AND '$(CI)' != 'TRUE'">
         <MakeDir Directories="$(GorillaTagDir)/BepInEx/plugins/$(SolutionName)"/>
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GorillaTagDir)/BepInEx/plugins/$(SolutionName)" SkipUnchangedFiles="true"/>
     </Target>

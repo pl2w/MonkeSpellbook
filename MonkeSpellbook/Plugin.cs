@@ -44,9 +44,8 @@ public class Plugin : BaseUnityPlugin
                 return;
             }
             
-            _wand = Instantiate(bundle.LoadAsset<GameObject>("Wand"), GorillaTagger.Instance.offlineVRRig.rightHandTransform, false);
-            _wand.transform.localPosition = Vector3.zero;
-            _wand.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
+            _wand = Instantiate(bundle.LoadAsset<GameObject>("Wand"));
+            _wand.transform.position = new Vector3(-65.9547f, 11.8385f, -82.9238f);
             
             _wand.AddComponent<MagicWand>();
             

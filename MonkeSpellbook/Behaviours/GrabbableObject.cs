@@ -1,3 +1,4 @@
+using System.Collections;
 using GorillaLocomotion;
 using UnityEngine;
 
@@ -8,11 +9,17 @@ public class GrabbableObject : HoldableObject
     public bool isInHand; 
     public bool isInLeftHand;
     public bool canBePickedUp = true;
+    public bool returnToDropPointOnDrop = false;
+    public float returnSpeed = 5f;
+
+    public Transform grabPoint;
+    public Transform dropPoint;
     
     private bool _didSwap;
     private Collider _collider;
+    private Coroutine _returnRoutine;
     
-    void Awake()
+    protected virtual void Awake()
     {
         _collider = GetComponent<Collider>();
         _collider.isTrigger = true;
@@ -75,24 +82,55 @@ public class GrabbableObject : HoldableObject
             ? GorillaTagger.Instance.offlineVRRig.leftHandTransform.parent 
             : GorillaTagger.Instance.offlineVRRig.rightHandTransform.parent;
 
-        transform.SetParent(handParent);
+        transform.SetParent(handParent, true);
         GorillaTagger.Instance.StartVibration(isLeft, 0.07f, 0.07f);
 
         if (isLeft) EquipmentInteractor.instance.leftHandHeldEquipment = this;
         else EquipmentInteractor.instance.rightHandHeldEquipment = this;
 
+        if (grabPoint)
+        {
+            transform.localRotation = Quaternion.Inverse(grabPoint.localRotation);
+            transform.localPosition = transform.localRotation * -grabPoint.localPosition;
+        }
+        
         OnGrab(isLeft);
     }
     
     private void Detach(bool isLeft)
     {
         isInHand = false;
-        transform.SetParent(null);
+        transform.SetParent(null, true);
 
+        if (_returnRoutine != null) 
+            StopCoroutine(_returnRoutine);
+
+        if (returnToDropPointOnDrop && dropPoint)
+        {
+            _returnRoutine = StartCoroutine(ReturnToHome());
+        }
+        
         if (isLeft) EquipmentInteractor.instance.leftHandHeldEquipment = null;
         else EquipmentInteractor.instance.rightHandHeldEquipment = null;
-
+        
         OnDrop(isLeft);
+    }
+    
+    private IEnumerator ReturnToHome()
+    {
+        while (Vector3.Distance(transform.position, dropPoint.position) > 0.1f)
+        {
+            transform.position = Vector3.Lerp(transform.position, dropPoint.position, Time.deltaTime * returnSpeed);
+            transform.rotation = Quaternion.Slerp(transform.rotation, dropPoint.rotation, Time.deltaTime * returnSpeed);
+            yield return null;
+        }
+    
+        transform.position = dropPoint.position;
+        transform.rotation = dropPoint.rotation;
+        
+        transform.SetParent(dropPoint);
+        
+        _returnRoutine = null;
     }
     
     public virtual void OnGrab(bool isLeft) { }

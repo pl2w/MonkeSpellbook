@@ -14,7 +14,9 @@ public class Plugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log;
     
-    private GameObject _book, _wand;
+    private GameObject _wand;
+    //private GameObject _book;
+    
     private bool _initialized;
     
     public Plugin()

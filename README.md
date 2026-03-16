@@ -1,14 +1,12 @@
 # Monke Spellbook
 
-## Credits
+## Third-Party Libraries
 
-Gesture recognition in this mod uses the **$1 Unistroke Recognizer** by
-Jacob O. Wobbrock, Andrew D. Wilson, and Yang Li.
+This project uses the PDollar Point-Cloud Gesture Recognizer adapted for Unity:
 
-Unity C# adaptation by Stephen Beeman.   
-https://github.com/SteBeeGizmo/DollarUnity
-
-The original implementation is licensed under the New BSD License.
+PDollar-Unity by DaVikingCode  
+https://github.com/DaVikingCode/PDollar-Unity  
+Licensed under the BSD-3-Clause License.
 
 ## Disclaimer
 

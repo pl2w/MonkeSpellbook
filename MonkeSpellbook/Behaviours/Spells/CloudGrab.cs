@@ -14,7 +14,7 @@ public class CloudGrab : Spell
     {
         _cloud = AssetLoader.LoadAsset<GameObject>("TestObject");
     }
-i
+
     public override void Activate()
     {
         if (!_cloud) 

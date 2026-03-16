@@ -9,7 +9,7 @@ public class GrabbableObject : HoldableObject
     public bool isInHand; 
     public bool isInLeftHand;
     public bool canBePickedUp = true;
-    public bool returnToDropPointOnDrop = false;
+    public bool returnToDropPointOnDrop = true;
     public float returnSpeed = 5f;
 
     public Transform grabPoint;

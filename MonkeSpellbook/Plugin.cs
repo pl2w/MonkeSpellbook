@@ -3,8 +3,11 @@ using BepInEx;
 using HarmonyLib;
 using System.Reflection;
 using BepInEx.Logging;
+using GorillaLocomotion;
 using MonkeSpellbook.Behaviours;
+using MonkeSpellbook.Behaviours.Spellbook;
 using MonkeSpellbook.Behaviours.Wand;
+using MonkeSpellbook.Systems;
 using UnityEngine;
 
 namespace MonkeSpellbook;
@@ -14,8 +17,7 @@ public class Plugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log;
     
-    private GameObject _wand;
-    //private GameObject _book;
+    private GameObject _wand, _book;
     
     private bool _initialized;
     
@@ -33,7 +35,7 @@ public class Plugin : BaseUnityPlugin
     {
         if (_initialized)
         {
-            Logger.LogWarning("Monke Spellbook has already been initialized!");
+            Logger.LogWarning("Monke Spellbook has already been initialized...");
             return;
         }
         
@@ -46,32 +48,28 @@ public class Plugin : BaseUnityPlugin
                 return;
             }
             
-            _wand = Instantiate(bundle.LoadAsset<GameObject>("Wand"));
-            _wand.transform.position = new Vector3(-65.9547f, 11.8385f, -82.9238f);
+            AssetLoader.SetDefaultBundle(bundle);
             
-            _wand.AddComponent<MagicWand>();
+            _wand = Instantiate(AssetLoader.LoadAsset<GameObject>("Wand"));
+            var wandComp = _wand.AddComponent<MagicWand>();
+            SpellRuntime.Context = new SpellContext(
+                wandComp.WandCollider,
+                wandComp.WandTip,
+                GTPlayer.Instance,
+                wandComp
+            );
             
-            var mr = _wand.transform.Find("WandModel")?.gameObject.GetComponent<MeshRenderer>();
-            if (mr == null)
-            {
-                Logger.LogError("Failed to get MeshRenderer from WandModel!");
-                return;
-            }
-            
-            var texture2D = mr.material.mainTexture;
-        
-            mr.material = new Material(UberShader.GetShader());
-            mr.material.EnableKeyword("_USE_TEXTURE");
-            mr.material.DisableKeyword("USE_TEXTURE__AS_MASK");
-            mr.material.SetInt("_ColorSource", 1);
-            mr.material.mainTexture = texture2D;
+            _book = new GameObject("SpellBook");
+            var spellbookComp = _book.AddComponent<Spellbook>();
+
+            wandComp.OnGestureRecognized += spellbookComp.HandleGesture;
             
             _initialized = true;
             Logger.LogInfo("MonkeSpellbook initialized successfully.");
         }
         catch (Exception e)
         {
-            Logger.LogError($"Initialization failed: {e.Message}");
+            Logger.LogError($"Initialization failed: {e}");
         }
     }
 }

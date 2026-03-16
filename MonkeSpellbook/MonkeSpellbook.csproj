@@ -136,6 +136,14 @@
             <HintPath>$(GorillaTagDir)/Gorilla Tag_Data/Managed/UnityEngine.PhysicsModule.dll</HintPath>
             <Private>false</Private>
         </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>$(GorillaTagDir)/Gorilla Tag_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>$(GorillaTagDir)/Gorilla Tag_Data/Managed/Newtonsoft.Json.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>

@@ -8,7 +8,7 @@ public class CloudGrab : Spell
     public override string Name => "cloudgrab";
 
     private GameObject _cloud;
-    private GameObject _leftCloud, _rightCloud;§
+    private GameObject _leftCloud, _rightCloud;
 
     private readonly Vector3 _positionOffset = new(0f, -0.05f, 0f);
     

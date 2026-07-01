@@ -64,8 +64,8 @@ public class CloudGrab : Spell
             return; 
         
         var handPos = isLeftHand ? 
-            SpellRuntime.Context.Player.LastLeftHandPosition : 
-            SpellRuntime.Context.Player.LastRightHandPosition; 
+            SpellRuntime.Context.Player.leftHand.GetCurrentHandPosition() : 
+            SpellRuntime.Context.Player.rightHand.GetCurrentHandPosition(); 
         
         if (SpellRuntime.Context.WandCollider.bounds.Contains(handPos)) 
             return; 

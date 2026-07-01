@@ -27,31 +27,11 @@ public class MagicWand : GrabbableObject
 
         transform.position = new Vector3(-66.0177f, 11.64f, -82.4992f);
         
-        SetupMaterial();
         SetupGrabPoint();
         SetupDropPoint();
         FindWandTip();
 
         SetupGestureTracking();
-    }
-
-    private void SetupMaterial()
-    {
-        var mr = transform.Find("WandModel")?.GetComponent<MeshRenderer>();
-        if (mr == null)
-        {
-            Plugin.Log.LogError("Failed to get MeshRenderer from WandModel!");
-            return;
-        }
-        
-        var texture2D = mr.material.mainTexture;
-        var wandMaterial = new Material(UberShader.GetShader());
-        wandMaterial.EnableKeyword("_USE_TEXTURE");
-        wandMaterial.DisableKeyword("USE_TEXTURE__AS_MASK");
-        wandMaterial.SetInt("_ColorSource", 1);
-        wandMaterial.mainTexture = texture2D;
-
-        mr.material = wandMaterial;
     }
 
     private void SetupGrabPoint()

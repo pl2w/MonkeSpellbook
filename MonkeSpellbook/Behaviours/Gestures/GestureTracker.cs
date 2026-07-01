@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MonkeSpellbook.Systems;
 using PDollarGestureRecognizer;
@@ -12,17 +13,37 @@ public class GestureTracker : MonoBehaviour
     public bool isActive;
     public float newPositionThreshold = 0.01f;
     
+    public LineRenderer lineRenderer;
+
+    public void Awake()
+    {
+        lineRenderer = transform.Find("WandTip").GetComponent<LineRenderer>();
+        lineRenderer.useWorldSpace = true;
+        lineRenderer.startWidth = 0.05f;
+        lineRenderer.endWidth = 0.05f;
+    }
+
     public void StartGesture()
     {
         isActive = true;
-        
+
         positions.Clear();
-        positions.Add(SpellRuntime.Context.WandTip.position);
+
+        var startPos = SpellRuntime.Context.WandTip.position;
+        positions.Add(startPos);
+
+        if (lineRenderer)
+        {
+            lineRenderer.positionCount = 1;
+            lineRenderer.SetPosition(0, startPos);
+        }
     }
 
     public void StopGesture()
     {
         isActive = false;
+        
+        lineRenderer.positionCount = 0;
     }
 
     public void UpdateGesture()
@@ -34,7 +55,14 @@ public class GestureTracker : MonoBehaviour
         var lastPosition = positions[^1];
     
         if (Vector3.Distance(wandPos, lastPosition) > newPositionThreshold)
+        {
             positions.Add(wandPos);
+            if (lineRenderer != null)
+            {
+                lineRenderer.positionCount = positions.Count;
+                lineRenderer.SetPosition(positions.Count - 1, wandPos);
+            }
+        }
     }
     
     public Point[] PositionsToPointArray(Vector3[] positionsList)

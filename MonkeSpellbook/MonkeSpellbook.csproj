@@ -147,6 +147,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Resources\" />
+    </ItemGroup>
+
+    <ItemGroup>
       <None Remove="Resources\monkespellbook" />
       <EmbeddedResource Include="Resources\monkespellbook" />
     </ItemGroup>

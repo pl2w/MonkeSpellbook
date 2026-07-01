@@ -8,11 +8,14 @@ public class CloudGrab : Spell
     public override string Name => "cloudgrab";
 
     private GameObject _cloud;
-    private GameObject _leftCloud, _rightCloud;
+    private GameObject _leftCloud, _rightCloud;§
+
+    private readonly Vector3 _positionOffset = new(0f, -0.05f, 0f);
     
     public override void Initialise()
     {
-        _cloud = AssetLoader.LoadAsset<GameObject>("TestObject");
+        _cloud = AssetLoader.LoadAsset<GameObject>("Cloud");
+        _cloud.transform.GetChild(0).AddComponent<GorillaSurfaceOverride>().overrideIndex = 93;
     }
 
     public override void Activate()
@@ -35,8 +38,8 @@ public class CloudGrab : Spell
         ControllerInputPoller.RemoveCallbackOnPressStart(OnGrabInput); 
         ControllerInputPoller.RemoveCallbackOnPressEnd(OnReleaseInput); 
         
-        if (_leftCloud != null) Object.Destroy(_leftCloud); 
-        if (_rightCloud != null) Object.Destroy(_rightCloud);
+        if (_leftCloud) Object.Destroy(_leftCloud); 
+        if (_rightCloud) Object.Destroy(_rightCloud);
         
         _leftCloud = null; 
         _rightCloud = null;
@@ -57,7 +60,7 @@ public class CloudGrab : Spell
     private void OnGrab(bool isLeftHand)
     {
         var cloud = isLeftHand ? _leftCloud : _rightCloud; 
-        if (cloud == null) 
+        if (!cloud) 
             return; 
         
         var handPos = isLeftHand ? 
@@ -68,7 +71,7 @@ public class CloudGrab : Spell
             return; 
         
         cloud.SetActive(true);
-        cloud.transform.position = handPos;
+        cloud.transform.position = handPos + _positionOffset;
     }
 
     private void OnRelease(bool isLeftHand)

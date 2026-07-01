@@ -18,7 +18,7 @@ public class MagicWand : GrabbableObject
     
     public event Action<Result> OnGestureRecognized;
     
-    public bool creationMode = false;
+    public bool creationMode;
     public string newGestureName = string.Empty;
     
     protected override void Awake()

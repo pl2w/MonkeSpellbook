@@ -155,6 +155,12 @@
       <EmbeddedResource Include="Resources\monkespellbook" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Reference Include="UnityEngine.ParticleSystemModule">
+        <HintPath>..\..\..\SteamLibrary\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
     <Import Project="Directory.Build.local.props" Condition="Exists('Directory.Build.local.props')"/>
 
     <Target Name="PostBuild_CopyToBepInEx" AfterTargets="Build" Condition="Exists('$(GorillaTagDir)') AND '$(CI)' != 'TRUE'">

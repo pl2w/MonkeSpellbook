@@ -15,7 +15,7 @@ public class CloudGrab : Spell
     public override void Initialise()
     {
         _cloud = AssetLoader.LoadAsset<GameObject>("Cloud");
-        _cloud.transform.GetChild(0).AddComponent<GorillaSurfaceOverride>().overrideIndex = 93;
+        _cloud.transform.GetChild(0).AddComponent<GorillaSurfaceOverride>().overrideIndex = 93; // Cloud hitsound index
     }
 
     public override void Activate()
@@ -67,6 +67,7 @@ public class CloudGrab : Spell
             SpellRuntime.Context.Player.leftHand.GetCurrentHandPosition() : 
             SpellRuntime.Context.Player.rightHand.GetCurrentHandPosition(); 
         
+        // Don't spawn cloud if hand is near the wand
         if (SpellRuntime.Context.WandCollider.bounds.Contains(handPos)) 
             return; 
         

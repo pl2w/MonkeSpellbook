@@ -2,7 +2,6 @@ using System;
 using MonkeSpellbook.Behaviours.Gestures;
 using PDollarGestureRecognizer;
 using UnityEngine;
-using UnityEngine.XR;
 
 namespace MonkeSpellbook.Behaviours.Wand;
 

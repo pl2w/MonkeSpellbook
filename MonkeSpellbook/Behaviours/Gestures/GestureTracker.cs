@@ -12,15 +12,37 @@ public class GestureTracker : MonoBehaviour
     
     public bool isActive;
     public float newPositionThreshold = 0.01f;
+
+    public float fadeOutDuration = 0.25f;
     
-    public LineRenderer lineRenderer;
+    public ParticleSystem trailParticles;
+
+    private ParticleSystem.Particle[] _particleBuffer;
 
     public void Awake()
     {
-        lineRenderer = transform.Find("WandTip").GetComponent<LineRenderer>();
-        lineRenderer.useWorldSpace = true;
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
+        trailParticles = transform.Find("WandTip").GetComponent<ParticleSystem>();
+
+        var main = trailParticles.main;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+        main.startSpeed = 0f;
+        main.startLifetime = 999999f;
+        main.maxParticles = Mathf.Max(main.maxParticles, 10000);
+
+        var emission = trailParticles.emission;
+        emission.rateOverTime = 0f;
+        emission.rateOverDistance = 0f;
+        
+        var colorOverLifetime = trailParticles.colorOverLifetime;
+        colorOverLifetime.enabled = true;
+        var alphaGradient = new Gradient();
+        alphaGradient.SetKeys(
+            new[] { new GradientColorKey(Color.white, 0f), new GradientColorKey(Color.white, 1f) },
+            new[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) }
+        );
+        colorOverLifetime.color = alphaGradient;
+
+        _particleBuffer = new ParticleSystem.Particle[main.maxParticles];
     }
 
     public void StartGesture()
@@ -32,18 +54,13 @@ public class GestureTracker : MonoBehaviour
         var startPos = SpellRuntime.Context.WandTip.position;
         positions.Add(startPos);
 
-        if (lineRenderer)
-        {
-            lineRenderer.positionCount = 1;
-            lineRenderer.SetPosition(0, startPos);
-        }
+        EmitAt(startPos);
     }
 
     public void StopGesture()
     {
         isActive = false;
-        
-        lineRenderer.positionCount = 0;
+        BeginFadeOut();
     }
 
     public void UpdateGesture()
@@ -57,15 +74,38 @@ public class GestureTracker : MonoBehaviour
         if (Vector3.Distance(wandPos, lastPosition) > newPositionThreshold)
         {
             positions.Add(wandPos);
-            if (lineRenderer != null)
-            {
-                lineRenderer.positionCount = positions.Count;
-                lineRenderer.SetPosition(positions.Count - 1, wandPos);
-            }
+            EmitAt(wandPos);
         }
     }
+
+    private void EmitAt(Vector3 worldPos)
+    {
+        if (!trailParticles) return;
+
+        var emitParams = new ParticleSystem.EmitParams
+        {
+            position = worldPos,
+            applyShapeToPosition = false
+        };
+        trailParticles.Emit(emitParams, 1);
+    }
     
-    public Point[] PositionsToPointArray(Vector3[] positionsList)
+    private void BeginFadeOut()
+    {
+        if (!trailParticles) return;
+
+        int count = trailParticles.GetParticles(_particleBuffer);
+
+        for (int i = 0; i < count; i++)
+        {
+            _particleBuffer[i].startLifetime = fadeOutDuration;
+            _particleBuffer[i].remainingLifetime = fadeOutDuration;
+        }
+
+        trailParticles.SetParticles(_particleBuffer, count);
+    }
+
+    private Point[] PositionsToPointArray(Vector3[] positionsList)
     {
         if (positionsList == null || positionsList.Length == 0)
             return [];

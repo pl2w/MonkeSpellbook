@@ -16,6 +16,7 @@ public class CloudGrab : Spell
     {
         _cloud = AssetLoader.LoadAsset<GameObject>("Cloud");
         _cloud.transform.GetChild(0).AddComponent<GorillaSurfaceOverride>().overrideIndex = 93; // Cloud hitsound index
+        _cloud.SetActive(false);
     }
 
     public override void Activate()

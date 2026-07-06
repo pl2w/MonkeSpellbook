@@ -8,9 +8,10 @@ namespace MonkeSpellbook.Behaviours.Spellbook
     public class Spellbook : MonoBehaviour
     {
         private readonly Spell[] _spells =
-        {
-            new CloudGrab()
-        };
+        [
+            new CloudGrab(),
+            new IcePath()
+        ];
 
         private Dictionary<string, Spell> _spellMap;
 

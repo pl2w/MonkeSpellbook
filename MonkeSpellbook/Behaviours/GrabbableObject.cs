@@ -10,8 +10,8 @@ public class GrabbableObject : HoldableObject
     public bool isInLeftHand;
     public bool canBePickedUp = true;
     public bool returnToDropPointOnDrop = true;
-    public float returnSpeed = 5f;
-
+    public float returnDuration = 0.5f;
+    
     public Transform grabPoint;
     public Transform dropPoint;
     
@@ -118,18 +118,26 @@ public class GrabbableObject : HoldableObject
     
     private IEnumerator ReturnToHome()
     {
-        while (Vector3.Distance(transform.position, dropPoint.position) > 0.1f)
+        Vector3 startPos = transform.position;
+        Quaternion startRot = transform.rotation;
+        float elapsed = 0f;
+
+        while (elapsed < returnDuration)
         {
-            transform.position = Vector3.Lerp(transform.position, dropPoint.position, Time.deltaTime * returnSpeed);
-            transform.rotation = Quaternion.Slerp(transform.rotation, dropPoint.rotation, Time.deltaTime * returnSpeed);
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / returnDuration);
+
+            transform.position = Vector3.Lerp(startPos, dropPoint.position, t);
+            transform.rotation = Quaternion.Slerp(startRot, dropPoint.rotation, t);
+
             yield return null;
         }
-    
+
         transform.position = dropPoint.position;
         transform.rotation = dropPoint.rotation;
-        
+
         transform.SetParent(dropPoint);
-        
+
         _returnRoutine = null;
     }
     

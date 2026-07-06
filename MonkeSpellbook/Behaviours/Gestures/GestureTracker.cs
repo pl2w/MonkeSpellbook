@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using MonkeSpellbook.Systems;
 using PDollarGestureRecognizer;
@@ -16,7 +15,6 @@ public class GestureTracker : MonoBehaviour
     public float fadeOutDuration = 0.25f;
     
     public ParticleSystem trailParticles;
-
     private ParticleSystem.Particle[] _particleBuffer;
 
     public void Awake()
@@ -59,10 +57,13 @@ public class GestureTracker : MonoBehaviour
 
     public void StopGesture()
     {
+        if (!isActive)
+            return;
+        
         isActive = false;
         BeginFadeOut();
     }
-
+    
     public void UpdateGesture()
     {
         if (!isActive || positions.Count == 0) 
@@ -80,7 +81,8 @@ public class GestureTracker : MonoBehaviour
 
     private void EmitAt(Vector3 worldPos)
     {
-        if (!trailParticles) return;
+        if (!trailParticles) 
+            return;
 
         var emitParams = new ParticleSystem.EmitParams
         {
@@ -92,9 +94,11 @@ public class GestureTracker : MonoBehaviour
     
     private void BeginFadeOut()
     {
-        if (!trailParticles) return;
+        if (!trailParticles) 
+            return;
 
         int count = trailParticles.GetParticles(_particleBuffer);
+        if (count == 0) return;
 
         for (int i = 0; i < count; i++)
         {

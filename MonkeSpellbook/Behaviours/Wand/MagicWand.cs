@@ -98,23 +98,7 @@ public class MagicWand : GrabbableObject
 
         if (isReleased)
         {
-            _gestureTracker.StopGesture();
-
-            var points = _gestureTracker.GetTrackedPoints();
-            var gesture = new Gesture(points);
-
-            if (creationMode)
-            {
-                gesture.Name = newGestureName;
-                _gestureRecognizer.ExportGesture(newGestureName, gesture);
-            }
-            else
-            {
-                var result = _gestureRecognizer.Recognize(gesture);
-                Plugin.Log.LogInfo(result.GestureClass + " " + result.Score);
-                OnGestureRecognized?.Invoke(result);
-            }
-            
+            FinishGesture();
             return;
         }
 
@@ -124,6 +108,34 @@ public class MagicWand : GrabbableObject
         }
     }
     
+    public override void OnDrop(bool isLeft)
+    {
+        if (_gestureTracker.isActive)
+        {
+            _gestureTracker.StopGesture();
+        }
+    }
+
+    private void FinishGesture()
+    {
+        _gestureTracker.StopGesture();
+
+        var points = _gestureTracker.GetTrackedPoints();
+        var gesture = new Gesture(points);
+
+        if (creationMode)
+        {
+            gesture.Name = newGestureName;
+            _gestureRecognizer.ExportGesture(newGestureName, gesture);
+        }
+        else
+        {
+            var result = _gestureRecognizer.Recognize(gesture);
+            Plugin.Log.LogInfo(result.GestureClass + " " + result.Score);
+            OnGestureRecognized?.Invoke(result);
+        }
+    }
+
     private void OnGUI()
     {
         GUI.BeginGroup(new Rect(10, 10, 250, 150), "Gesture Creator", GUI.skin.window);

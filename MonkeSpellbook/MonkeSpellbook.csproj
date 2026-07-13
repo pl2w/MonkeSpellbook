@@ -144,20 +144,13 @@
             <HintPath>$(GorillaTagDir)/Gorilla Tag_Data/Managed/Newtonsoft.Json.dll</HintPath>
             <Private>false</Private>
         </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule">
+            <HintPath>$(GorillaTagDir)/Gorilla Tag_Data/Managed/UnityEngine.ParticleSystemModule.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Resources\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="UnityEngine.ParticleSystemModule">
-        <HintPath>..\..\..\SteamLibrary\steamapps\common\Gorilla Tag\Gorilla Tag_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="Resources\monkespellbook" />
       <EmbeddedResource Include="Resources\monkespellbook" />
     </ItemGroup>
 

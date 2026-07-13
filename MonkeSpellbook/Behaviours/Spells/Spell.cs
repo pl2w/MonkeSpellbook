@@ -17,4 +17,6 @@ public abstract class Spell
     protected GTPlayer Player => SpellRuntime.Context.Player;
     protected Collider WandCollider => SpellRuntime.Context.WandCollider;
     protected Transform WandTip => SpellRuntime.Context.WandTip;
+    
+    protected bool IsNearWand(Vector3 position) => WandCollider.bounds.Contains(position);
 }

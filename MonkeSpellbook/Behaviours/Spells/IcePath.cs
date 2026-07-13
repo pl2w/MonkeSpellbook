@@ -22,6 +22,8 @@ public class IcePath : Spell
 
     private GameObject _poolParent;
     
+    private readonly Vector3 _positionOffset = new(0f, 0.05f, 0f);
+    
     public override void Initialise()
     {
         _baseIcePath = AssetLoader.LoadAsset<GameObject>("Ice");
@@ -79,8 +81,8 @@ public class IcePath : Spell
             SpellRuntime.Context.Player.rightHand;
         
         var handPos = hand.GetCurrentHandPosition();
-        if (SpellRuntime.Context.WandCollider.bounds.Contains(handPos))
-            return;
+        if (IsNearWand(handPos)) 
+            return; 
 
         if (isLeftHand) { _isDrawingLeft = true; _lastSpawnPosLeft = handPos; }
         else { _isDrawingRight = true; _lastSpawnPosRight = handPos; }
@@ -123,7 +125,7 @@ public class IcePath : Spell
     
     private void SpawnSegment(Quaternion handRot, Vector3 handPos)
     {
-        var obj = _pool.Get(handPos, handRot);
+        var obj = _pool.Get(handPos + _positionOffset, handRot);
         _activeSegments.Add(obj);
     }
 }

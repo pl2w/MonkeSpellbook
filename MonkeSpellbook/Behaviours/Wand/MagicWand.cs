@@ -12,13 +12,11 @@ public class MagicWand : GrabbableObject
     
     private GestureTracker _gestureTracker;
     private GestureRecognizer _gestureRecognizer;
+    private GestureCreatorUI _creatorUI;
     
     public GestureRecognizer GestureRecognizer => _gestureRecognizer;
     
     public event Action<Result> OnGestureRecognized;
-    
-    public bool creationMode;
-    public string newGestureName = string.Empty;
     
     protected override void Awake()
     {
@@ -73,6 +71,7 @@ public class MagicWand : GrabbableObject
     {
         _gestureTracker = gameObject.AddComponent<GestureTracker>();
         _gestureRecognizer = new GestureRecognizer();
+        _creatorUI = gameObject.AddComponent<GestureCreatorUI>();
     }
 
     protected override void Update()
@@ -123,10 +122,10 @@ public class MagicWand : GrabbableObject
         var points = _gestureTracker.GetTrackedPoints();
         var gesture = new Gesture(points);
 
-        if (creationMode)
+        if (_creatorUI.CreationMode)
         {
-            gesture.Name = newGestureName;
-            _gestureRecognizer.ExportGesture(newGestureName, gesture);
+            gesture.Name = _creatorUI.NewGestureName;
+            _gestureRecognizer.ExportGesture(_creatorUI.NewGestureName, gesture);
         }
         else
         {
@@ -134,17 +133,5 @@ public class MagicWand : GrabbableObject
             Plugin.Log.LogInfo(result.GestureClass + " " + result.Score);
             OnGestureRecognized?.Invoke(result);
         }
-    }
-
-    private void OnGUI()
-    {
-        GUI.BeginGroup(new Rect(10, 10, 250, 150), "Gesture Creator", GUI.skin.window);
-
-        creationMode = GUI.Toggle(new Rect(10, 25, 200, 25), creationMode, "Creation Mode");
-
-        GUI.Label(new Rect(10, 55, 200, 20), "New Gesture Name:");
-        newGestureName = GUI.TextField(new Rect(10, 75, 200, 25), newGestureName);
-
-        GUI.EndGroup();
     }
 }

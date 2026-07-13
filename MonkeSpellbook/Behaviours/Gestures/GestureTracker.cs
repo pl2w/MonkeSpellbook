@@ -97,10 +97,10 @@ public class GestureTracker : MonoBehaviour
         if (!trailParticles) 
             return;
 
-        int count = trailParticles.GetParticles(_particleBuffer);
+        var count = trailParticles.GetParticles(_particleBuffer);
         if (count == 0) return;
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             _particleBuffer[i].startLifetime = fadeOutDuration;
             _particleBuffer[i].remainingLifetime = fadeOutDuration;

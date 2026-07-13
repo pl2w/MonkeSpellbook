@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using PDollarGestureRecognizer;
@@ -34,11 +35,18 @@ public class GestureRecognizer
         var xmlFiles = Directory.GetFiles(path, "*.xml");
         foreach (var xmlFile in xmlFiles)
         {
-            var gesture = GestureIO.ReadGestureFromFile(xmlFile);
+            try
+            {
+                var gesture = GestureIO.ReadGestureFromFile(xmlFile);
             
-            Plugin.Log.LogDebug(gesture.Name);
+                Plugin.Log.LogDebug(gesture.Name);
             
-            AddGesture(gesture);
+                AddGesture(gesture);
+            }
+            catch (Exception e)
+            {
+                Plugin.Log.LogError($"Failed to load gesture from {xmlFile}: {e}");
+            }
         }
     }
 

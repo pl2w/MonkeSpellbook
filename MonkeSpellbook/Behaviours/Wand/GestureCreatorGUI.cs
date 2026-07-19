@@ -8,10 +8,13 @@ public class GestureCreatorUI : MonoBehaviour
     public string NewGestureName { get; private set; } = string.Empty;
 
     private Rect _windowRect = new(10, 10, 250, 150);
+    private static readonly int WindowId = "MonkeSpellbook.GestureCreator".GetHashCode();
 
     private void OnGUI()
     {
-        _windowRect = GUI.Window(0, _windowRect, DrawWindow, "Gesture Creator");
+        #if DEBUG
+        _windowRect = GUI.Window(WindowId, _windowRect, DrawWindow, "Gesture Creator");
+        #endif
     }
 
     private void DrawWindow(int id)

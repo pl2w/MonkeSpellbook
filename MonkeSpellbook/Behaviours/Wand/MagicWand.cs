@@ -130,7 +130,7 @@ public class MagicWand : GrabbableObject
         else
         {
             var result = _gestureRecognizer.Recognize(gesture);
-            Plugin.Log.LogInfo(result.GestureClass + " " + result.Score);
+            Plugin.Log.LogDebug(result.GestureClass + " " + result.Score);
             OnGestureRecognized?.Invoke(result);
         }
     }
